@@ -35,5 +35,5 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## This Project is developed by Aman Raj [Aman Raj](https://github.com/Aman-raj23).
+## This Project is developed by [Aman Raj](https://github.com/Aman-raj23).
 
