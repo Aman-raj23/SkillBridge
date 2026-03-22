@@ -7,53 +7,65 @@ export async function POST(request) {
         const resumeText = body.resume || body.resumeText || '';
         const targetRole = body.targetRole || 'General';
 
-        if (!resumeText) {
-            return NextResponse.json({ error: 'Resume text is required' }, { status: 400 });
+        if (!resumeText || resumeText.trim().length < 20) {
+            return NextResponse.json(
+                { error: 'Please provide more resume content. Paste your full resume text or upload a PDF/DOCX file.' },
+                { status: 400 }
+            );
         }
 
-        const prompt = `You are a career skills analyst. Analyze this resume against the target role.
+        console.log('[Analyze] Resume length:', resumeText.length, '| Target role:', targetRole);
+
+        const prompt = `You are an expert career skills analyst and resume reviewer. Analyze the following resume thoroughly and critically against the target role.
+
+IMPORTANT INSTRUCTIONS:
+- Give an HONEST and ACCURATE score based on how well the resume matches the target role
+- Do NOT default to any particular score — evaluate each resume independently
+- Consider: relevant skills, experience level, projects, education, certifications, keywords
+- A score of 90+ means the candidate is exceptionally well-matched
+- A score of 70-89 means strong match with some gaps
+- A score of 50-69 means moderate match, significant gaps exist
+- A score below 50 means major gaps for the target role
+- The strengths should list ACTUAL skills found in the resume
+- The gaps should identify SPECIFIC skills the candidate is missing for the target role
+- Recommendations should be ACTIONABLE and SPECIFIC to this candidate
 
 Resume:
-${resumeText.substring(0, 4000)}
+${resumeText.substring(0, 6000)}
 
 Target Role: ${targetRole}
 
-Return ONLY valid JSON in this exact format:
+Return ONLY valid JSON in this exact format (no markdown, no extra text):
 {
-  "score": <0-100 readiness score>,
-  "strengths": ["skill1", "skill2", ...],
-  "gaps": [{"skill": "name", "level": "Missing|Needs Work|Partial", "current": <0-100 proficiency>}, ...],
-  "recommendations": ["recommendation1", "recommendation2", ...]
+  "score": <number 0-100, be honest and specific>,
+  "summary": "<2-3 sentence overall assessment of the candidate>",
+  "strengths": ["strength1", "strength2", "strength3", ...],
+  "gaps": [
+    {"skill": "skill name", "level": "Missing|Beginner|Needs Improvement|Partial", "current": <0-100 proficiency estimate>},
+    ...
+  ],
+  "recommendations": ["specific actionable recommendation 1", "specific actionable recommendation 2", ...]
 }`;
 
-        const result = await askGemini(prompt, 1200);
+        const result = await askGemini(prompt, 2000);
 
-        if (!result) {
-            // No valid API key — return demo data
-            return NextResponse.json({
-                score: 68,
-                strengths: ['JavaScript', 'React', 'Node.js', 'REST APIs', 'Git'],
-                gaps: [
-                    { skill: 'System Design', level: 'Missing', current: 15 },
-                    { skill: 'Kubernetes / Docker', level: 'Missing', current: 10 },
-                    { skill: 'Distributed Systems', level: 'Needs Work', current: 25 },
-                    { skill: 'CI/CD Pipelines', level: 'Needs Work', current: 30 },
-                    { skill: 'Cloud Infrastructure (AWS/GCP)', level: 'Partial', current: 40 },
-                ],
-                recommendations: [
-                    'Focus on system design fundamentals — start with "Designing Data-Intensive Applications" by Martin Kleppmann.',
-                    'Get hands-on with Docker and Kubernetes through a personal project deployment.',
-                    'Build at least one distributed system project (e.g., a task queue or real-time chat) to demonstrate competence.',
-                    'Set up a full CI/CD pipeline with GitHub Actions for your portfolio projects.',
-                    'Practice mock system design interviews on platforms like Pramp or interviewing.io.',
-                ],
-                _demo: true,
-            });
+        // Validate that the result has the expected structure
+        if (!result || typeof result.score !== 'number') {
+            console.error('[Analyze] Invalid AI response structure:', JSON.stringify(result).substring(0, 300));
+            return NextResponse.json(
+                { error: 'AI returned an unexpected response format. Please try again.' },
+                { status: 500 }
+            );
         }
 
+        console.log('[Analyze] Success! Score:', result.score);
         return NextResponse.json(result);
+
     } catch (error) {
         console.error('[Analyze] Error:', error.message);
-        return NextResponse.json({ error: 'Analysis failed: ' + error.message }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Analysis failed: ' + error.message },
+            { status: 500 }
+        );
     }
 }
