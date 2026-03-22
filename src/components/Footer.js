@@ -36,7 +36,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="foot-bot">
-                    <div className="foot-copy">© 2025 SkillBridge AI — Connecting Education to Industry Skills</div>
+                    <div className="foot-copy">© 2026 SkillBridge AI — Connecting Education to Industry Skills</div>
                     <div className="tech-tags">
                         <span className="tech-tag">Next.js</span>
                         <span className="tech-tag">Supabase</span>

@@ -14,14 +14,14 @@ export default function Home() {
         <h1 className="hero-h1">
           From student<br />to <span className="grad-text">industry-ready</span>
         </h1>
-        <p className="hero-sub">Upload your resume. Set your target role. Get a precise readiness score, skill gap analysis, personalized roadmap, and interview prep — powered by Gemini AI.</p>
+        <p className="hero-sub">Upload your resume. Set your target role. Get a precise readiness score, skill gap analysis, personalized roadmap, and interview prep — powered by AI.</p>
         <div className="hero-btns">
           <Link href="/analyzer" className="btn-primary">✦ Analyze My Resume <span>→</span></Link>
           <Link href="/dashboard" className="btn-outline">View Dashboard</Link>
         </div>
         <div className="hero-stats">
-          <div className="h-stat"><div className="h-sv"><span>94</span>%</div><div className="h-sl">Skill Match Accuracy</div></div>
-          <div className="h-stat"><div className="h-sv"><span>AI</span></div><div className="h-sl">Personalized Roadmap</div></div>
+          <div className="h-stat"><div className="h-sv"><span>High</span></div><div className="h-sl">Skill Match Accuracy</div></div>
+          <div className="h-stat"><div className="h-sv"><span>Roadmap</span></div><div className="h-sl">Personalized Roadmap</div></div>
           <div className="h-stat"><div className="h-sv"><span>Gemini</span></div><div className="h-sl">AI Engine</div></div>
           <div className="h-stat"><div className="h-sv"><span>∞</span></div><div className="h-sl">Reports Saved</div></div>
         </div>

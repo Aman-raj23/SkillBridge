@@ -27,30 +27,35 @@ export default function LoginPage() {
         setError('');
         setStatus(isSignUp ? 'Creating account...' : 'Signing in...');
 
-        if (isSignUp) {
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: { full_name: fullName },
-                },
-            });
-            if (error) {
-                setError(error.message);
-                setStatus('');
-                return;
+        try {
+            if (isSignUp) {
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: { full_name: fullName },
+                    },
+                });
+                if (error) {
+                    setError(error.message);
+                    setStatus('');
+                    return;
+                }
+                setStatus('Account created! Redirecting...');
+                setTimeout(() => router.push('/dashboard'), 1000);
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    setError(error.message);
+                    setStatus('');
+                    return;
+                }
+                setStatus('Welcome back! Redirecting...');
+                setTimeout(() => router.push('/dashboard'), 500);
             }
-            setStatus('Account created! Redirecting...');
-            setTimeout(() => router.push('/dashboard'), 1000);
-        } else {
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                setError(error.message);
-                setStatus('');
-                return;
-            }
-            setStatus('Welcome back! Redirecting...');
-            setTimeout(() => router.push('/dashboard'), 500);
+        } catch (err) {
+            setError('Could not connect to auth server. Your Supabase project may be paused — check supabase.com/dashboard and resume it.');
+            setStatus('');
         }
     }
 
