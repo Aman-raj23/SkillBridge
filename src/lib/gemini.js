@@ -1,4 +1,3 @@
-// Shared Gemini AI helper
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 export async function askGemini(prompt, maxTokens = 1500) {
