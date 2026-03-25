@@ -1,11 +1,9 @@
 'use client';
 import { createContext, useContext, useState, useCallback } from 'react';
-
 const ToastContext = createContext();
 
 export function ToastProvider({ children }) {
     const [toast, setToast] = useState({ show: false, icon: '', msg: '' });
-
     const showToast = useCallback((icon, msg) => {
         setToast({ show: true, icon, msg });
         setTimeout(() => setToast(t => ({ ...t, show: false })), 3200);
@@ -21,5 +19,4 @@ export function ToastProvider({ children }) {
         </ToastContext.Provider>
     );
 }
-
 export const useToast = () => useContext(ToastContext);
